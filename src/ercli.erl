@@ -27,26 +27,38 @@ handle_input(Address, Direction, Speed) ->
 	Stripped = re:replace(Input, "\n", "", [global,{return, list}]),
 	[Head|Tail] = string:split(Stripped, " "),
 	if
-		Head == "f" ->
+		Head == "f" -> % forward drive
 			New_direction = "forward",
 			New_speed = set_speed(Tail, Speed, Direction, New_direction),
 			erlangZ21:drive_train(erlangZ21:udp_details(), Address, New_direction, New_speed, "none"),
 			io:fwrite("forward ~p~n", [New_speed]),
 			handle_input(Address, New_direction, New_speed);
-		Head == "r" ->
+		Head == "r" -> % reverse drive
 			New_direction = "reverse",
 			New_speed = set_speed(Tail, Speed, Direction, New_direction),
 			erlangZ21:drive_train(erlangZ21:udp_details(), Address, New_direction, New_speed, "none"),
 			io:fwrite("reverse ~p~n", [New_speed]),
 			handle_input(Address, New_direction, New_speed);
-		Head == "s" ->
+		Head == "s" -> % stop locomotive
 			io:fwrite("stop~n"),
 			erlangZ21:drive_train(erlangZ21:udp_details(), Address, Direction, 0, "normal"),
 			handle_input(Address, Direction, Speed);
-		Head == "q" ->
+		Head == "a" -> % switch function on or off
+			Num_str = re:replace(Tail, "\\D", "", [global, {return, list}]),
+			case length(Num_str) > 0 of
+				true ->
+					Num_int = list_to_integer(Num_str),
+					erlangZ21:set_loco_function(
+					  erlangZ21:udp_details(), Address,
+					  Num_int, "switch"),
+					io:fwrite("function ~p~n", [Num_int]);
+				false ->
+					io:fwrite("Please supply a function number.~n")
+			end,
+			handle_input(Address, Direction, Speed);
+		Head == "q" -> % quit ercli
 			io:fwrite("quitting...~n");
 		true ->
-			pass,
 			handle_input(Address, Direction, Speed)
 	end.
 
