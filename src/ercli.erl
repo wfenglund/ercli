@@ -1,5 +1,13 @@
 -module(ercli).
--export([main/1]).
+-export([main/1, try_connect/2, connect_timer/1]).
+
+try_connect(Address, PID) ->
+	erlangZ21:get_loco_info(erlangZ21:udp_details(), Address),
+	PID ! {contact}.
+
+connect_timer(PID) ->
+	timer:sleep(60000),
+	PID ! {timed_out}.
 
 set_speed(Command, Speed, Direction, New_direction) ->
 	if
@@ -63,5 +71,12 @@ handle_input(Address, Direction, Speed) ->
 	end.
 
 main(Address) ->
-	io:fwrite("Communicating with locomotive ~p~n", [Address]),
-	handle_input(Address, "forward", 0).
+	spawn(?MODULE, try_connect, [Address, self()]),
+	spawn(?MODULE, connect_timer, [self()]),
+	receive
+		{contact} ->
+			io:fwrite("~nCommunicating with locomotive ~p:~n", [Address]),
+			handle_input(Address, "forward", 0);
+		{timed_out} ->
+			io:fwrite("Could not establish contact with locomotive ~p, are you connected to the Z21?~n", [Address])
+	end.
