@@ -1,7 +1,12 @@
 # ercli
 The Erlang Railroad Command Line Interface.
 
-## How to run
+## Build
+```bash
+$ cd ercli/
+$ rebar3 compile
+```
+## Use
 In the terminal:
 ```bash
 $ cd ercli/
