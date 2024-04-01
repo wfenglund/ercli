@@ -14,13 +14,25 @@ set_speed(Command, Speed, Direction, New_direction) ->
 		(Direction == New_direction) or (Speed == 0) ->
 			case Command of
 				["+"] ->
-					New_speed = Speed + 5;
+					if
+						Speed == 0 ->
+							New_speed = 30;
+						true ->
+							New_speed = Speed + 5
+					end;
 				["-"] ->
 					if
 						Speed - 5 < 0 ->
 							New_speed = 0;
 						true ->
 							New_speed = Speed - 5
+					end;
+				[] ->
+					if
+						Speed == 0 ->
+							New_speed = 30;
+						true ->
+							New_speed = Speed
 					end;
 				_ ->
 					New_speed = Speed
