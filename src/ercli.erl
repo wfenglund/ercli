@@ -16,7 +16,7 @@ set_speed(Command, Speed, Direction, New_direction) ->
 				["+"] ->
 					if
 						Speed == 0 ->
-							New_speed = 30;
+							New_speed = 25;
 						true ->
 							New_speed = Speed + 5
 					end;
@@ -30,7 +30,7 @@ set_speed(Command, Speed, Direction, New_direction) ->
 				[] ->
 					if
 						Speed == 0 ->
-							New_speed = 30;
+							New_speed = 25;
 						true ->
 							New_speed = Speed
 					end;
@@ -67,7 +67,7 @@ handle_input(Address, Direction, Speed) ->
 		Head == "s" -> % stop locomotive
 			io:fwrite("stop~n"),
 			erlangZ21:drive_train(erlangZ21:udp_details(), Address, Direction, 0, "normal"),
-			handle_input(Address, Direction, Speed);
+			handle_input(Address, Direction, 0);
 		Head == "a" -> % switch function on or off
 			Num_str = re:replace(Tail, "\\D", "", [global, {return, list}]),
 			case length(Num_str) > 0 of
