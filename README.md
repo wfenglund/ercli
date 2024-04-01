@@ -1,5 +1,5 @@
 # ercli
-The Erlang Railroad Command Line Interface.
+The Erlang Railroad Command Line Interface. A program written in erlang for interacting with the Roco/Fleishmann Z21 command station. The program relies heavily on the library [erlangZ21](https://github.com/wfenglund/erlangZ21).
 
 ## Build
 In the terminal:
