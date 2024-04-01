@@ -1,5 +1,5 @@
 -module(ercli).
--export([main/1, try_connect/2, connect_timer/1]).
+-export([main/1, try_connect/2, connect_timer/1, print_info/1]).
 
 try_connect(Address, PID) ->
 	erlangZ21:get_loco_info(erlangZ21:udp_details(), Address),
@@ -29,6 +29,11 @@ set_speed(Command, Speed, Direction, New_direction) ->
 			New_speed = 0
 	end,
 	New_speed.
+
+print_info(Address) ->
+	timer:sleep(20000),
+	erlangZ21:get_loco_info(erlangZ21:udp_details(), Address),
+	print_info(Address).
 
 handle_input(Address, Direction, Speed) ->
 	Input = io:get_line("Command> "),
@@ -63,6 +68,9 @@ handle_input(Address, Direction, Speed) ->
 				false ->
 					io:fwrite("Please supply a function number.~n")
 			end,
+			handle_input(Address, Direction, Speed);
+		Head == "i" -> % subscribe to locomotive info
+			spawn(?MODULE, print_info, [Address]),
 			handle_input(Address, Direction, Speed);
 		Head == "q" -> % quit ercli
 			io:fwrite("quitting...~n");
