@@ -14,7 +14,7 @@ In the terminal:
 $ cd ercli/ # not necessary if you are already in this directory
 $ rebar3 shell
 ```
-In the rebar3/erlang shell, make sure that you are connected to the Z21:
+In the rebar3/erlang shell (make sure that you are connected to the Z21 first):
 ```erlang
 1> ercli:main(1). % where 1 is the locomotive address
 Command> f % increase forward speed
