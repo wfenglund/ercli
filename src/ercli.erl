@@ -6,7 +6,7 @@ try_connect(Address, PID) ->
 	PID ! {contact}.
 
 connect_timer(PID) ->
-	timer:sleep(60000),
+	timer:sleep(30000),
 	PID ! {timed_out}.
 
 set_speed(Command, Speed, Direction, New_direction) ->
