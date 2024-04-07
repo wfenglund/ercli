@@ -13,28 +13,28 @@ set_speed(Command, Speed, Direction, New_direction) ->
 	if
 		(Direction == New_direction) or (Speed == 0) ->
 			case Command of
-				["+"] ->
+				["+"] -> % increase speed by 5
 					if
 						Speed == 0 ->
 							New_speed = 25;
 						true ->
 							New_speed = Speed + 5
 					end;
-				["-"] ->
+				["-"] -> % degrease speed by 5
 					if
 						Speed - 5 < 0 ->
 							New_speed = 0;
 						true ->
 							New_speed = Speed - 5
 					end;
-				[] ->
+				[] -> % set New_speed to 25 if Speed 0, otherwise continue with the same speed
 					if
 						Speed == 0 ->
 							New_speed = 25;
 						true ->
 							New_speed = Speed
 					end;
-				_ ->
+				_ -> % keep the same speed if Command is ambiguous
 					New_speed = Speed
 			end;
 		true -> % reduce speed to 0 if locomotive is travelling in another direction
