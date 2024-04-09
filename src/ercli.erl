@@ -47,6 +47,9 @@ print_info(Address) ->
 	erlangZ21:get_loco_info(erlangZ21:udp_details(), Address),
 	print_info(Address).
 
+mk_cyan(String) ->
+	"\033[96m" ++ String ++ "\033[0m".
+
 handle_input(Address, Direction, Speed) ->
 	Input = io:get_line("Command> "),
 	Stripped = re:replace(Input, "\n", "", [global,{return, list}]),
@@ -56,17 +59,17 @@ handle_input(Address, Direction, Speed) ->
 			New_direction = "forward",
 			New_speed = set_speed(Tail, Speed, Direction, New_direction),
 			erlangZ21:drive_train(erlangZ21:udp_details(), Address, New_direction, New_speed, "none"),
-			io:fwrite("forward ~p~n", [New_speed]),
+			io:fwrite("~s~n", [mk_cyan("forward " ++ integer_to_list(New_speed))]),
 			handle_input(Address, New_direction, New_speed);
 		Head == "r" -> % reverse drive
 			New_direction = "reverse",
 			New_speed = set_speed(Tail, Speed, Direction, New_direction),
 			erlangZ21:drive_train(erlangZ21:udp_details(), Address, New_direction, New_speed, "none"),
-			io:fwrite("reverse ~p~n", [New_speed]),
+			io:fwrite("~s~n", [mk_cyan("reverse " ++ integer_to_list(New_speed))]),
 			handle_input(Address, New_direction, New_speed);
 		Head == "s" -> % stop locomotive
-			io:fwrite("stop~n"),
 			erlangZ21:drive_train(erlangZ21:udp_details(), Address, Direction, 0, "normal"),
+			io:fwrite("~s~n", [mk_cyan("stop")]),
 			handle_input(Address, Direction, 0);
 		Head == "a" -> % switch function on or off
 			Num_str = re:replace(Tail, "\\D", "", [global, {return, list}]),
@@ -76,16 +79,16 @@ handle_input(Address, Direction, Speed) ->
 					erlangZ21:set_loco_function(
 					  erlangZ21:udp_details(), Address,
 					  Num_int, "switch"),
-					io:fwrite("function ~p~n", [Num_int]);
+					io:fwrite("~s~n", [mk_cyan("function " ++ Num_str)]);
 				false ->
-					io:fwrite("Please supply a function number.~n")
+					io:fwrite("~s~n", [mk_cyan("Please supply a function number.")])
 			end,
 			handle_input(Address, Direction, Speed);
 		Head == "i" -> % subscribe to locomotive info
 			spawn(?MODULE, print_info, [Address]),
 			handle_input(Address, Direction, Speed);
 		Head == "q" -> % quit ercli
-			io:fwrite("quitting...~n");
+			io:fwrite("~s~n", [mk_cyan("quitting...")]);
 		true ->
 			handle_input(Address, Direction, Speed)
 	end.
