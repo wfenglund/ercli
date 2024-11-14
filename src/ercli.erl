@@ -50,6 +50,18 @@ print_info(Address) ->
 mk_cyan(String) ->
 	"\033[96m" ++ String ++ "\033[0m".
 
+print_instructions() ->
+	io:fwrite("~s~n", ["f   : increase forward speed"]),
+	io:fwrite("~s~n", ["i   : subscribe to loco info"]),
+	io:fwrite("~s~n", ["f + : increase forward speed"]),
+	io:fwrite("~s~n", ["f - : reduce forward speed"]),
+	io:fwrite("~s~n", ["s   : stop"]),
+	io:fwrite("~s~n", ["r   : reverse drive"]),
+	io:fwrite("~s~n", ["a 0 : activate locomotive function 0"]),
+	io:fwrite("~s~n", ["a 0 : deactivate locomotive function 0"]),
+	io:fwrite("~s~n", ["q   : quit"]),
+	io:fwrite("~s~n", ["h   : print this help message"]).
+
 handle_input(Address, Direction, Speed) ->
 	Input = io:get_line("Command> "),
 	Stripped = re:replace(Input, "\n", "", [global,{return, list}]),
@@ -86,6 +98,9 @@ handle_input(Address, Direction, Speed) ->
 			handle_input(Address, Direction, Speed);
 		Head == "i" -> % subscribe to locomotive info
 			spawn(?MODULE, print_info, [Address]),
+			handle_input(Address, Direction, Speed);
+		Head == "h" -> % print usage instructions
+			print_instructions(),
 			handle_input(Address, Direction, Speed);
 		Head == "q" -> % quit ercli
 			io:fwrite("~s~n", [mk_cyan("quitting...")]);
