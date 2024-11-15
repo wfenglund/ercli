@@ -52,7 +52,8 @@ mk_cyan(String) ->
 
 print_instructions() ->
 	io:fwrite("~s~n", ["f   : increase forward speed"]),
-	io:fwrite("~s~n", ["i   : subscribe to loco info"]),
+	io:fwrite("~s~n", ["i   : print loco info"]),
+	io:fwrite("~s~n", ["isub: subscribe to loco info"]),
 	io:fwrite("~s~n", ["f + : increase forward speed"]),
 	io:fwrite("~s~n", ["f - : reduce forward speed"]),
 	io:fwrite("~s~n", ["s   : stop"]),
@@ -96,7 +97,10 @@ handle_input(Address, Direction, Speed) ->
 					io:fwrite("~s~n", [mk_cyan("Please supply a function number.")])
 			end,
 			handle_input(Address, Direction, Speed);
-		Head == "i" -> % subscribe to locomotive info
+		Head == "i" -> % print locomotive info
+			erlangZ21:get_loco_info(erlangZ21:udp_details(), Address),
+			handle_input(Address, Direction, Speed);
+		Head == "isub" -> % subscribe to locomotive info
 			spawn(?MODULE, print_info, [Address]),
 			handle_input(Address, Direction, Speed);
 		Head == "h" -> % print usage instructions

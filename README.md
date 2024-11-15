@@ -19,7 +19,8 @@ In the rebar3/erlang shell (make sure that you are connected to the Z21 first):
 1> ercli:main(1). % where 1 is the locomotive address
 Command> h % print help message
 Command> f % increase forward speed
-Command> i % subscribe to loco info
+Command> i % print loco info
+Command> isub % subscribe to loco info
 Command> f + % increase forward speed
 Command> f - % reduce forward speed
 Command> s % stop
